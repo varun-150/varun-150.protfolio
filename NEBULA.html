@@ -1,0 +1,2802 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nebula — UX Case Study</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&family=Sora:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --black: #080808;
+            --near-black: #111;
+            --dark: #1c1c1c;
+            --mid: #4a4a4a;
+            --soft: #767676;
+            --light: #b0b0b0;
+            --silver: #d8d8d8;
+            --off-white: #f6f5f2;
+            --warm: #fafaf8;
+            --white: #ffffff;
+            --border: rgba(0, 0, 0, 0.07);
+            --border-med: rgba(0, 0, 0, 0.12);
+            --shadow-xs: 0 1px 4px rgba(0, 0, 0, 0.05);
+            --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.08);
+            --r: 10px;
+            --r-lg: 18px;
+            --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px
+        }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden
+        }
+
+        /* ── REVEAL ── */
+        .r {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 1s var(--ease), transform 1s var(--ease)
+        }
+
+        .r.on {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .d1 {
+            transition-delay: .08s
+        }
+
+        .d2 {
+            transition-delay: .16s
+        }
+
+        .d3 {
+            transition-delay: .24s
+        }
+
+        .d4 {
+            transition-delay: .32s
+        }
+
+        .d5 {
+            transition-delay: .4s
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 200;
+            padding: 0 56px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid transparent;
+            transition: border-color .3s, background .3s
+        }
+
+        nav.up {
+            border-color: var(--border)
+        }
+
+        .n-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -.02em;
+            color: var(--black)
+        }
+
+        .n-links {
+            display: flex;
+            gap: 36px;
+            list-style: none
+        }
+
+        .n-links a {
+            font-size: 12.5px;
+            font-weight: 400;
+            color: var(--soft);
+            text-decoration: none;
+            letter-spacing: .025em;
+            transition: color .2s
+        }
+
+        .n-links a:hover {
+            color: var(--black)
+        }
+
+        .n-pill {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            color: var(--soft);
+            padding: 5px 12px;
+            border: 1px solid var(--border-med);
+            border-radius: 100px
+        }
+
+        /* ── HERO ── */
+        .hero {
+            min-height: 100vh;
+            display: grid;
+            place-items: end;
+            padding: 0 56px 96px;
+            position: relative;
+            background: var(--white);
+            overflow: hidden
+        }
+
+        .hero-noise {
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.018'/%3E%3C/svg%3E");
+            background-size: 200px;
+            pointer-events: none;
+            opacity: .6
+        }
+
+        .hero-giant {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -52%);
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(140px, 22vw, 320px);
+            font-weight: 900;
+            color: rgba(0, 0, 0, .022);
+            white-space: nowrap;
+            pointer-events: none;
+            letter-spacing: -.04em;
+            user-select: none;
+            line-height: 1
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            width: 100%
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: var(--off-white);
+            border-radius: 100px;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--mid);
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            margin-bottom: 44px;
+            opacity: 0;
+            animation: fu 1s var(--ease) .2s forwards
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            background: var(--mid);
+            border-radius: 50%;
+            flex-shrink: 0
+        }
+
+        .hero-h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(54px, 8.5vw, 118px);
+            font-weight: 900;
+            line-height: .93;
+            letter-spacing: -.035em;
+            color: var(--black);
+            max-width: 980px;
+            opacity: 0;
+            animation: fu 1.1s var(--ease) .35s forwards
+        }
+
+        .hero-h1 span {
+            font-style: italic;
+            color: var(--soft)
+        }
+
+        .hero-foot {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-top: 72px;
+            opacity: 0;
+            animation: fu 1s var(--ease) .55s forwards;
+            flex-wrap: wrap;
+            gap: 32px
+        }
+
+        .hero-sub {
+            font-size: clamp(15px, 1.4vw, 18px);
+            color: var(--soft);
+            font-weight: 300;
+            max-width: 400px;
+            line-height: 1.75;
+            letter-spacing: .01em
+        }
+
+        .hero-kpis {
+            display: flex;
+            gap: 52px
+        }
+
+        .kpi-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--black);
+            letter-spacing: -.04em;
+            line-height: 1
+        }
+
+        .kpi-lbl {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--light);
+            margin-top: 5px;
+            letter-spacing: .06em;
+            text-transform: uppercase
+        }
+
+        .scroll-cue {
+            position: absolute;
+            bottom: 36px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            animation: fadeIn 1s var(--ease) 1.2s forwards
+        }
+
+        .scroll-bar {
+            width: 1px;
+            height: 48px;
+            background: linear-gradient(to bottom, transparent, var(--silver));
+            animation: pulse 2s ease-in-out infinite
+        }
+
+        .scroll-txt {
+            font-size: 10px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--light);
+            font-weight: 500
+        }
+
+        /* ── SECTION BASE ── */
+        section {
+            padding: clamp(80px, 10vw, 140px) clamp(24px, 5vw, 56px)
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--light);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .section-label::before {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border)
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border)
+        }
+
+        .s-label-left {
+            justify-content: flex-start
+        }
+
+        .s-label-left::before {
+            display: none
+        }
+
+        /* ── DIVIDER ── */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 0 56px
+        }
+
+        /* ── INTRO ── */
+        .intro {
+            background: var(--white)
+        }
+
+        .intro-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(40px, 6vw, 100px);
+            align-items: start;
+            max-width: 1280px;
+            margin: 0 auto
+        }
+
+        .intro-h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(36px, 4.5vw, 58px);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -.03em;
+            color: var(--black);
+            max-width: 460px
+        }
+
+        .intro-h2 em {
+            font-style: italic;
+            color: var(--mid)
+        }
+
+        .intro-body {
+            font-size: 16px;
+            color: var(--soft);
+            font-weight: 300;
+            line-height: 1.8;
+            max-width: 440px
+        }
+
+        .intro-body p+p {
+            margin-top: 20px
+        }
+
+        /* ── PROBLEM ── */
+        .problem {
+            background: var(--off-white)
+        }
+
+        .prob-inner {
+            max-width: 1280px;
+            margin: 0 auto
+        }
+
+        .prob-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(40px, 5.5vw, 72px);
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -.03em;
+            color: var(--black);
+            max-width: 700px;
+            margin-bottom: 80px
+        }
+
+        .prob-headline em {
+            font-style: italic;
+            color: var(--mid)
+        }
+
+        .prob-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1px;
+            background: var(--border-med);
+            border-radius: var(--r-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-med)
+        }
+
+        .prob-card {
+            background: var(--warm);
+            padding: 40px 36px;
+            position: relative;
+            transition: background .3s
+        }
+
+        .prob-card:hover {
+            background: var(--white)
+        }
+
+        .pc-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 52px;
+            font-weight: 900;
+            color: rgba(0, 0, 0, .06);
+            line-height: 1;
+            margin-bottom: 20px;
+            letter-spacing: -.04em
+        }
+
+        .pc-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--black);
+            margin-bottom: 10px;
+            letter-spacing: -.01em
+        }
+
+        .pc-body {
+            font-size: 14px;
+            color: var(--soft);
+            font-weight: 300;
+            line-height: 1.7
+        }
+
+        /* ── RESEARCH ── */
+        .research {
+            background: var(--white)
+        }
+
+        .research-inner {
+            max-width: 1280px;
+            margin: 0 auto
+        }
+
+        .research-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: end;
+            margin-bottom: 72px
+        }
+
+        .research-h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(36px, 4.5vw, 56px);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -.03em;
+            color: var(--black)
+        }
+
+        .research-h2 em {
+            font-style: italic;
+            color: var(--mid)
+        }
+
+        .research-intro {
+            font-size: 15px;
+            color: var(--soft);
+            font-weight: 300;
+            line-height: 1.75
+        }
+
+        .quotes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 64px
+        }
+
+        .quote-card {
+            padding: 32px;
+            border: 1px solid var(--border-med);
+            border-radius: var(--r);
+            transition: transform .4s var(--ease), box-shadow .4s var(--ease), border-color .3s
+        }
+
+        .quote-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--silver)
+        }
+
+        .qc-mark {
+            font-family: 'Playfair Display', serif;
+            font-size: 40px;
+            color: var(--silver);
+            line-height: .8;
+            margin-bottom: 14px;
+            display: block
+        }
+
+        .qc-text {
+            font-size: 14px;
+            color: var(--dark);
+            font-weight: 300;
+            line-height: 1.75;
+            font-style: italic;
+            margin-bottom: 16px
+        }
+
+        .qc-src {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--light);
+            letter-spacing: .06em;
+            text-transform: uppercase
+        }
+
+        .qc-src span {
+            color: var(--mid)
+        }
+
+        .research-insights {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin-top: 64px
+        }
+
+        .ri-item {
+            padding: 32px 0;
+            border-top: 1px solid var(--border)
+        }
+
+        .ri-pct {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--black);
+            letter-spacing: -.04em;
+            line-height: 1
+        }
+
+        .ri-label {
+            font-size: 14px;
+            color: var(--soft);
+            font-weight: 300;
+            margin-top: 8px;
+            line-height: 1.6
+        }
+
+        /* ── USER PAIN ── */
+        .pain {
+            background: var(--near-black);
+            color: var(--white)
+        }
+
+        .pain-inner {
+            max-width: 1280px;
+            margin: 0 auto
+        }
+
+        .pain .section-label {
+            color: rgba(255, 255, 255, .3)
+        }
+
+        .pain .section-label::before,
+        .pain .section-label::after {
+            background: rgba(255, 255, 255, .1)
+        }
+
+        .pain-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(38px, 5vw, 68px);
+            font-weight: 800;
+            line-height: 1.02;
+            letter-spacing: -.03em;
+            color: var(--white);
+            max-width: 680px;
+            margin-bottom: 72px
+        }
+
+        .pain-headline em {
+            font-style: italic;
+            color: rgba(255, 255, 255, .4)
+        }
+
+        .pain-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0
+        }
+
+        .pain-item {
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, .07);
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 24px;
+            align-items: start
+        }
+
+        .pain-item:nth-child(odd) {
+            padding-right: 60px;
+            border-right: 1px solid rgba(255, 255, 255, .07)
+        }
+
+        .pain-item:nth-child(even) {
+            padding-left: 60px
+        }
+
+        .pi-idx {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 800;
+            color: rgba(255, 255, 255, .12);
+            letter-spacing: -.04em;
+            line-height: 1
+        }
+
+        .pi-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 8px;
+            letter-spacing: -.01em
+        }
+
+        .pi-body {
+            font-size: 14px;
+            color: rgba(255, 255, 255, .45);
+            font-weight: 300;
+            line-height: 1.7
+        }
+
+        /* ── PROCESS ── */
+        .process {
+            background: var(--white)
+        }
+
+        .process-inner {
+            max-width: 1280px;
+            margin: 0 auto
+        }
+
+        .proc-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(36px, 4.5vw, 60px);
+            font-weight: 800;
+            line-height: 1.04;
+            letter-spacing: -.03em;
+            color: var(--black);
+            max-width: 640px;
+            margin-bottom: 80px
+        }
+
+        .proc-headline em {
+            font-style: italic;
+            color: var(--mid)
+        }
+
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0;
+            position: relative
+        }
+
+        .process-steps::before {
+            content: '';
+            position: absolute;
+            top: 28px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border-med);
+            z-index: 0
+        }
+
+        .proc-step {
+            padding-top: 60px;
+            position: relative;
+            z-index: 1;
+            padding-right: 20px
+        }
+
+        .ps-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--black);
+            border: 2px solid var(--white);
+            box-shadow: 0 0 0 1px var(--black);
+            position: absolute;
+            top: 24px;
+            left: 0
+        }
+
+        .ps-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 800;
+            color: rgba(0, 0, 0, .08);
+            letter-spacing: -.04em;
+            line-height: 1;
+            margin-bottom: 12px
+        }
+
+        .ps-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--black);
+            margin-bottom: 8px;
+            letter-spacing: -.01em
+        }
+
+        .ps-body {
+            font-size: 13px;
+            color: var(--soft);
+            font-weight: 300;
+            line-height: 1.65
+        }
+
+        /* ── UX APPROACH ── */
+        .uxapproach {
+            background: var(--off-white)
+        }
+
+        .ux-inner {
+            max-width: 1280px;
+            margin: 0 auto
+        }
+
+        .ux-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(36px, 4.5vw, 60px);
+            font-weight: 800;
+            line-height: 1.04;
+            letter-spacing: -.03em;
+            color: var(--black);
+            max-width: 700px;
+            margin-bottom: 80px
+        }
+
+        .ux-headline em {
+            font-style: italic;
+            color: var(--mid)
+        }
+
+        .ux-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2px;
+            background: var(--border-med);
+            border-radius: var(--r-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-med)
+        }
+
+        .ux-cell {
+            background: var(--warm);
+            padding: 52px 48px;
+            transition: background .3s
+        }
+
+        .ux-cell:hover {
+            background: var(--white)
+        }
+
+        .uxc-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--off-white);
+            border: 1px solid var(--border-med);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 28px;
+            font-size: 18px
+        }
+
+        .uxc-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--black);
+            letter-spacing: -.02em;
+            margin-bottom: 12px
+        }
+
+        .uxc-body {
+            font-size: 14px;
+            color: var(--soft);
+            font-weight: 300;
+            line-height: 1.75
+        }
+
+        .uxc-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px
+        }
+
+        .uxc-tag {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 4px 10px;
+            background: rgba(0, 0, 0, .05);
+            border-radius: 100px;
+            color: var(--mid);
+            letter-spacing: .03em
+        }
+
+        /* ── SHOWCASE ── */
+        .showcase {
+            background: var(--white);
+            overflow: hidden
+        }
+
+        .show-inner {
+            max-width: 1280px;
+            margin: 0 auto
+        }
+
+        .show-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(36px, 4.5vw, 60px);
+            font-weight: 800;
+            line-height: 1.04;
+            letter-spacing: -.03em;
+            color: var(--black);
+            margin-bottom: 16px
+        }
+
+        .show-headline em {
+            font-style: italic;
+            color: var(--mid)
+        }
+
+        .show-sub {
+            font-size: 16px;
+            color: var(--soft);
+            font-weight: 300;
+            max-width: 520px;
+            margin-bottom: 72px;
+            line-height: 1.7
+        }
+
+        .screen-block {
+            margin-bottom: 80px
+        }
+
+        .screen-block:last-child {
+            margin-bottom: 0
+        }
+
+        .screen-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px
+        }
+
+        .screen-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--mid);
+            letter-spacing: .04em;
+            text-transform: uppercase
+        }
+
+        .screen-desc {
+            font-size: 13.5px;
+            color: var(--soft);
+            font-weight: 300;
+            max-width: 480px;
+            text-align: right;
+            line-height: 1.6
+        }
+
+        .screen-frame {
+            background: var(--off-white);
+            border-radius: var(--r-lg);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            position: relative;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: box-shadow .5s var(--ease)
+        }
+
+        .screen-frame:hover {
+            box-shadow: var(--shadow-lg)
+        }
+
+        .sf-inner {
+            width: 92%;
+            height: 90%;
+            background: var(--near-black);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: stretch
+        }
+
+        /* Mock screen visuals */
+        .mock-sidebar {
+            width: 180px;
+            padding: 20px 16px;
+            border-right: 1px solid rgba(255, 255, 255, .07);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px
+        }
+
+        .mock-sidebar .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 14px;
+            color: var(--white);
+            font-weight: 800;
+            margin-bottom: 16px;
+            padding: 0 8px
+        }
+
+        .mock-nav-item {
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            color: rgba(255, 255, 255, .4);
+            font-weight: 400;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .mock-nav-item.active {
+            background: rgba(255, 255, 255, .08);
+            color: var(--white)
+        }
+
+        .mock-nav-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .3);
+            flex-shrink: 0
+        }
+
+        .mock-nav-dot.active {
+            background: rgba(255, 255, 255, .8)
+        }
+
+        .mock-main {
+            flex: 1;
+            padding: 24px;
+            overflow: hidden
+        }
+
+        .mock-greeting {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 4px;
+            line-height: 1
+        }
+
+        .mock-greeting-sub {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .35);
+            margin-bottom: 24px;
+            font-weight: 300;
+            letter-spacing: .03em
+        }
+
+        .mock-section-lbl {
+            font-size: 10px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, .3);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 10px
+        }
+
+        .mock-cards-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px
+        }
+
+        .mock-card {
+            border-radius: 8px;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .07);
+            flex-shrink: 0;
+            overflow: hidden
+        }
+
+        .mock-card-main {
+            width: 140px;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 10px;
+            background: linear-gradient(135deg, rgba(80, 60, 60, .6), rgba(20, 20, 30, .9))
+        }
+
+        .mock-card-sm {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: rgba(255, 255, 255, .4);
+            padding: 8px;
+            text-align: center;
+            font-weight: 300;
+            line-height: 1.3
+        }
+
+        .mock-card-title {
+            font-size: 10.5px;
+            font-weight: 600;
+            color: var(--white);
+            margin-top: auto;
+            line-height: 1.2
+        }
+
+        .mock-card-sub {
+            font-size: 9px;
+            color: rgba(255, 255, 255, .4);
+            margin-top: 2px;
+            font-weight: 300
+        }
+
+        .mock-bar {
+            height: 2px;
+            background: rgba(255, 255, 255, .08);
+            border-radius: 1px;
+            margin-bottom: 20px
+        }
+
+        .mock-bar-fill {
+            height: 100%;
+            width: 40%;
+            background: rgba(255, 255, 255, .3);
+            border-radius: 1px
+        }
+
+        .mock-player {
+            position: absolute;
+            bottom: 0;
+            left: 180px;
+            right: 0;
+            height: 52px;
+            border-top: 1px solid rgba(255, 255, 255, .07);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 12px;
+            background: rgba(0, 0, 0, .4)
+        }
+
+        .mock-player-art {
+            width: 32px;
+            height: 32px;
+            border-radius: 5px;
+            background: linear-gradient(135deg, rgba(100, 80, 60, .8), rgba(30, 30, 50, .9));
+            flex-shrink: 0
+        }
+
+        .mock-player-info {
+            flex: 1
+        }
+
+        .mock-player-track {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--white);
+            line-height: 1.3
+        }
+
+        .mock-player-artist {
+            font-size: 10px;
+            color: rgba(255, 255, 255, .35);
+            font-weight: 300
+        }
+
+        .mock-player-ctl {
+            display: flex;
+            gap: 10px;
+            align-items: center
+        }
+
+        .mock-ctl-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0
+        }
+
+        .mock-ctl-btn svg {
+            width: 12px;
+            height: 12px;
+            fill: var(--black)
+        }
+
+        .mock-ctl-skip {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .1);
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .mock-ctl-skip svg {
+            width: 9px;
+            height: 9px;
+            fill: rgba(255, 255, 255, .5)
+        }
+
+        /* Explore mock */
+        .mock-explore-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 4px;
+            line-height: 1
+        }
+
+        .mock-explore-sub {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .3);
+            margin-bottom: 20px;
+            font-weight: 300;
+            font-style: italic
+        }
+
+        .mock-search {
+            height: 32px;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            gap: 8px;
+            margin-bottom: 20px
+        }
+
+        .mock-search span {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .2);
+            font-weight: 300
+        }
+
+        .mock-immersion-cards {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px
+        }
+
+        .mic {
+            border-radius: 8px;
+            overflow: hidden;
+            flex: 1;
+            height: 90px;
+            position: relative
+        }
+
+        .mic-1 {
+            background: linear-gradient(135deg, #2a1a0e, #0d0d18)
+        }
+
+        .mic-2 {
+            background: linear-gradient(135deg, #0e1a2a, #0d0d18)
+        }
+
+        .mic-3 {
+            background: linear-gradient(135deg, #111, #1a1a1a)
+        }
+
+        .mic-4 {
+            background: linear-gradient(135deg, #1a0e1e, #0d0d18)
+        }
+
+        .mic-label {
+            position: absolute;
+            bottom: 8px;
+            left: 8px
+        }
+
+        .mic-title {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--white);
+            line-height: 1.2
+        }
+
+        .mic-sub {
+            font-size: 9px;
+            color: rgba(255, 255, 255, .4);
+            font-weight: 300
+        }
+
+        .mock-genre-row {
+            display: flex;
+            gap: 8px
+        }
+
+        .mg-chip {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .04em;
+            text-transform: uppercase
+        }
+
+        .mg-1 {
+            background: rgba(255, 255, 255, .15);
+            color: var(--white)
+        }
+
+        .mg-2 {
+            background: rgba(255, 255, 255, .07);
+            color: rgba(255, 255, 255, .5)
+        }
+
+        /* Vinyl mock */
+        .sf-vinyl {
+            flex: 1;
+            display: flex;
+            background: var(--near-black)
+        }
+
+        .vinyl-left {
+            flex: 1;
+            background: rgba(0, 0, 0, .4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid rgba(255, 255, 255, .05)
+        }
+
+        .vinyl-right {
+            flex: 1;
+            background: var(--white);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 32px
+        }
+
+        .vinyl-disc {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, .1) 0%, rgba(40, 30, 20, .8) 30%, rgba(10, 8, 8, .95) 60%, rgba(20, 15, 10, .9) 100%);
+            border: 1px solid rgba(255, 255, 255, .08);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: spin 8s linear infinite
+        }
+
+        .vinyl-label {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2a1a0e, #1a1018);
+            border: 1px solid rgba(255, 255, 255, .1);
+            z-index: 1
+        }
+
+        .vinyl-edition {
+            font-size: 10px;
+            color: var(--light);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            font-weight: 500
+        }
+
+        .vinyl-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--black);
+            line-height: 1;
+            letter-spacing: -.03em;
+            margin-bottom: 4px
+        }
+
+        .vinyl-artist {
+            font-size: 13px;
+            color: var(--soft);
+            margin-bottom: 16px;
+            font-weight: 300
+        }
+
+        .vinyl-desc {
+            font-size: 12px;
+            color: var(--light);
+            font-weight: 300;
+            line-height: 1.6;
+            margin-bottom: 20px
+        }
+
+        .vinyl-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+
+        .vc-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--black);
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .vc-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--white)
+        }
+
+        .vc-skip {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--border-med);
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .vc-skip svg {
+            width: 10px;
+            height: 10px;
+            fill: var(--soft)
+        }
+
+        .vinyl-quality {
+            font-size: 10px;
+            color: var(--light);
+            letter-spacing: .04em;
+            font-weight: 500;
+            margin-top: 16px
+        }
+
+        .vinyl-quality span {
+            color: var(--dark);
+            font-weight: 600
+        }
+
+        /* ── COMPARISON ── */
+        .compare {
+            background: var(--off-white)
+        }
+
+        .compare-inner {
+            max-width: 1280px;
+            margin: 0 auto
+        }
+
+        .cmp-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(36px, 4.5vw, 60px);
+            font-weight: 800;
+            line-height: 1.04;
+            letter-spacing: -.03em;
+            color: var(--black);
+            max-width: 700px;
+            margin-bottom: 80px
+        }
+
+        .cmp-headline em {
+            font-style: italic;
+            color: var(--mid)
+        }
+
+        .cmp-table {
+            border-radius: var(--r-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-med)
+        }
+
+        .cmp-head {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            background: var(--black);
+            padding: 24px 32px
+        }
+
+        .ch-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .4)
+        }
+
+        .ch-label.hl {
+            color: var(--white)
+        }
+
+        .cmp-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            padding: 20px 32px;
+            background: var(--warm);
+            border-top: 1px solid var(--border);
+            align-items: center
+        }
+
+        .cmp-row:hover {
+            background: var(--white)
+        }
+
+        .cr-dim {
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--dark)
+        }
+
+        .cr-std {
+            font-size: 13px;
+            font-weight: 300;
+            color: var(--soft)
+        }
+
+        .cr-neb {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--black);
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .cr-neb::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--dark);
+            flex-shrink: 0
+        }
+
+        /* ── REFLECTION ── */
+        .reflection {
+            background: var(--white)
+        }
+
+        .refl-inner {
+            max-width: 1280px;
+            margin: 0 auto
+        }
+
+        .refl-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(40px, 6vw, 100px);
+            align-items: start
+        }
+
+
+
+        .refl-h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(36px, 4.5vw, 58px);
+            font-weight: 800;
+            line-height: 1.04;
+            letter-spacing: -.03em;
+            color: var(--black);
+            margin-bottom: 32px
+        }
+
+        .refl-h2 em {
+            font-style: italic;
+            color: var(--mid)
+        }
+
+        .refl-body {
+            font-size: 15.5px;
+            color: var(--soft);
+            font-weight: 300;
+            line-height: 1.8
+        }
+
+        .refl-body p+p {
+            margin-top: 20px
+        }
+
+        .refl-challenges {
+            margin-top: 48px
+        }
+
+        .rc-title {
+            font-size: 11.5px;
+            font-weight: 600;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            color: var(--light);
+            margin-bottom: 24px
+        }
+
+        .challenge-item {
+            padding: 20px 0;
+            border-top: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: 24px 1fr;
+            gap: 16px
+        }
+
+        .ci-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--silver);
+            line-height: 1.4
+        }
+
+        .ci-text {
+            font-size: 14px;
+            color: var(--mid);
+            font-weight: 300;
+            line-height: 1.65
+        }
+
+
+
+        .refl-outcomes {
+            margin-bottom: 48px
+        }
+
+        .ro-title {
+            font-size: 11.5px;
+            font-weight: 600;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            color: var(--light);
+            margin-bottom: 24px
+        }
+
+        .outcome-item {
+            padding: 28px 0;
+            border-top: 1px solid var(--border)
+        }
+
+        .oi-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--black);
+            margin-bottom: 6px;
+            letter-spacing: -.01em
+        }
+
+        .oi-body {
+            font-size: 13.5px;
+            color: var(--soft);
+            font-weight: 300;
+            line-height: 1.65
+        }
+
+        .refl-quote {
+            background: var(--off-white);
+            border-radius: var(--r);
+            padding: 36px;
+            position: relative;
+            overflow: hidden
+        }
+
+        .rq-mark {
+            font-family: 'Playfair Display', serif;
+            font-size: 80px;
+            color: var(--border-med);
+            line-height: .7;
+            position: absolute;
+            top: 16px;
+            left: 24px;
+            font-weight: 900
+        }
+
+        .rq-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-style: italic;
+            color: var(--dark);
+            line-height: 1.55;
+            position: relative;
+            z-index: 1;
+            font-weight: 700
+        }
+
+        /* ── REFERENCES ── */
+        .references {
+            background: var(--off-white)
+        }
+
+        .refs-inner {
+            max-width: 1280px;
+            margin: 0 auto
+        }
+
+        .refs-h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(32px, 4vw, 50px);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -.03em;
+            color: var(--black);
+            margin-bottom: 64px
+        }
+
+        .refs-h2 em {
+            font-style: italic;
+            color: var(--mid)
+        }
+
+        .refs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 20px
+        }
+
+        .ref-card {
+            background: var(--warm);
+            border: 1px solid var(--border-med);
+            border-radius: var(--r);
+            padding: 28px;
+            transition: transform .4s var(--ease), box-shadow .4s var(--ease)
+        }
+
+        .ref-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md)
+        }
+
+        .ref-source {
+            font-size: 10.5px;
+            font-weight: 600;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: var(--light);
+            margin-bottom: 10px
+        }
+
+        .ref-source span {
+            color: var(--soft)
+        }
+
+        .ref-finding {
+            font-size: 14px;
+            color: var(--dark);
+            font-weight: 400;
+            line-height: 1.65;
+            margin-bottom: 14px;
+            font-style: italic
+        }
+
+        .ref-implication {
+            font-size: 12.5px;
+            color: var(--soft);
+            font-weight: 300;
+            line-height: 1.6
+        }
+
+        .ref-implication strong {
+            font-weight: 600;
+            color: var(--mid)
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background: var(--black);
+            color: var(--white);
+            padding: 80px 56px 48px
+        }
+
+        .foot-inner {
+            max-width: 1280px;
+            margin: 0 auto
+        }
+
+        .foot-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 72px;
+            padding-bottom: 64px;
+            border-bottom: 1px solid rgba(255, 255, 255, .08)
+        }
+
+        .foot-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--white);
+            letter-spacing: -.04em;
+            margin-bottom: 12px
+        }
+
+        .foot-tagline {
+            font-size: 14px;
+            color: rgba(255, 255, 255, .35);
+            font-weight: 300;
+            letter-spacing: .03em
+        }
+
+        .foot-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 48px
+        }
+
+        .foot-link {
+            font-size: 13px;
+            color: rgba(255, 255, 255, .4);
+            font-weight: 400;
+            text-decoration: none;
+            transition: color .2s;
+            letter-spacing: .01em
+        }
+
+        .foot-link:hover {
+            color: var(--white)
+        }
+
+        .foot-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px
+        }
+
+        .foot-author {
+            font-size: 13px;
+            color: rgba(255, 255, 255, .3);
+            font-weight: 300
+        }
+
+        .foot-author strong {
+            color: rgba(255, 255, 255, .6);
+            font-weight: 500
+        }
+
+        .foot-made {
+            font-size: 11.5px;
+            color: rgba(255, 255, 255, .2);
+            letter-spacing: .04em;
+            font-weight: 400
+        }
+
+        /* ── KEYFRAMES ── */
+        @keyframes fu {
+            from {
+                opacity: 0;
+                transform: translateY(28px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: .3
+            }
+
+            50% {
+                opacity: 1
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg)
+            }
+
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        /* ── RESPONSIVE ── */
+        @media(max-width:960px) {
+            nav {
+                padding: 0 24px
+            }
+
+            .n-links {
+                display: none
+            }
+
+            .hero {
+                padding: 0 24px 72px
+            }
+
+            .intro-grid,
+            .research-header,
+            .refl-grid,
+            .pain-list {
+                grid-template-columns: 1fr
+            }
+
+            .pain-item:nth-child(odd) {
+                padding-right: 0;
+                border-right: none
+            }
+
+            .pain-item:nth-child(even) {
+                padding-left: 0
+            }
+
+            .process-steps {
+                grid-template-columns: 1fr 1fr;
+                gap: 32px
+            }
+
+            .process-steps::before {
+                display: none
+            }
+
+            .research-insights {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .ux-grid {
+                grid-template-columns: 1fr
+            }
+
+            .screen-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px
+            }
+
+            .screen-desc {
+                text-align: left
+            }
+
+            .cmp-table {
+                overflow-x: auto
+            }
+
+            .foot-top {
+                flex-direction: column;
+                gap: 40px
+            }
+
+            .foot-bottom {
+                flex-direction: column;
+                align-items: flex-start
+            }
+
+            section {
+                padding: 72px 24px
+            }
+
+            .divider {
+                margin: 0 24px
+            }
+
+            .hero-kpis {
+                gap: 28px
+            }
+        }
+
+        @media(max-width:640px) {
+            .hero-foot {
+                flex-direction: column;
+                align-items: flex-start
+            }
+
+            .hero-kpis {
+                flex-wrap: wrap;
+                gap: 24px
+            }
+
+            .prob-cards {
+                grid-template-columns: 1fr
+            }
+
+            .quotes-grid {
+                grid-template-columns: 1fr
+            }
+
+            .research-insights {
+                grid-template-columns: 1fr
+            }
+
+            .refs-grid {
+                grid-template-columns: 1fr
+            }
+
+            .sf-inner {
+                flex-direction: column
+            }
+
+            .mock-sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, .07);
+                flex-direction: row;
+                flex-wrap: wrap;
+                padding: 12px 16px
+            }
+
+            .mock-sidebar .logo {
+                width: 100%;
+                margin-bottom: 8px
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <nav id="nav">
+        <div class="n-logo">Nebula</div>
+        <ul class="n-links">
+            <li><a href="#problem">Problem</a></li>
+            <li><a href="#research">Research</a></li>
+            <li><a href="#process">Process</a></li>
+            <li><a href="#showcase">Screens</a></li>
+            <li><a href="#reflection">Reflection</a></li>
+            <li><a href="#references">References</a></li>
+        </ul>
+        <span class="n-pill">UX Case Study</span>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+        <div class="hero-noise"></div>
+        <div class="hero-giant">Nebula</div>
+        <div class="hero-content">
+            <div class="hero-badge">Emotional Music Streaming · 2024</div>
+            <h1 class="hero-h1">Emotion in<br><span>every wave.</span></h1>
+            <div class="hero-foot">
+                <p class="hero-sub">A UX case study exploring what happens when music streaming is designed around how
+                    people feel — not just what they consume.</p>
+                <div class="hero-kpis">
+                    <div>
+                        <div class="kpi-num">3</div>
+                        <div class="kpi-lbl">Days to Ship</div>
+                    </div>
+                    <div>
+                        <div class="kpi-num">7</div>
+                        <div class="kpi-lbl">Screens Designed</div>
+                    </div>
+                    <div>
+                        <div class="kpi-num">5</div>
+                        <div class="kpi-lbl">UX Pillars</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-cue">
+            <div class="scroll-txt">Scroll</div>
+            <div class="scroll-bar"></div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- INTRO -->
+    <section class="intro" id="intro">
+        <div class="intro-grid">
+            <div>
+                <p class="section-label s-label-left">Introduction</p>
+                <h2 class="intro-h2 r">What if music apps were designed to make you <em>feel</em>?</h2>
+            </div>
+            <div class="r d2">
+                <p class="intro-body">
+                <p>Platforms like Spotify, Apple Music, and others have achieved remarkable scale — they've made music
+                    accessible to billions. But in pursuing accessibility and engagement, they've drifted from the
+                    emotional heart of why music matters to us.</p>
+                <p>Nebula started with a single question: what would a music platform look like if it was engineered
+                    from the ground up around emotional resonance — not playlists, not algorithms, not engagement
+                    metrics?</p>
+                <p>This case study documents that exploration — from research and problem framing to design system, UI
+                    decisions, and deployed prototype.</p>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider" id="problem"></div>
+
+    <!-- PROBLEM -->
+    <section class="problem">
+        <div class="prob-inner">
+            <p class="section-label r">Problem Statement</p>
+            <h2 class="prob-headline r d1">The streaming era <em>optimised</em> for consumption.<br>Nobody optimised for
+                feeling.</h2>
+            <div class="prob-cards">
+                <div class="prob-card r d1">
+                    <div class="pc-num">01</div>
+                    <div class="pc-title">Over-functional experience</div>
+                    <p class="pc-body">Most apps are content machines — playlists, algorithms, recommendation carousels.
+                        They are not designed around emotional resonance, mood immersion, or sensory atmosphere. People
+                        listen to music but are rarely made to feel it.</p>
+                </div>
+                <div class="prob-card r d2">
+                    <div class="pc-num">02</div>
+                    <div class="pc-title">Visually overcrowded interfaces</div>
+                    <p class="pc-body">Excessive content blocks, aggressive recommendation layouts, repetitive card
+                        systems, and cluttered hierarchy create cognitive fatigue, reduce emotional focus, and produce
+                        passive interaction behaviour.</p>
+                </div>
+                <div class="prob-card r d3">
+                    <div class="pc-num">03</div>
+                    <div class="pc-title">No emotional personalisation</div>
+                    <p class="pc-body">Apps personalise songs and genres — but fail to personalise emotional state,
+                        listening mood, ambient visual experience, or time-based atmosphere. The difference between
+                        "what to hear" and "how to feel while hearing it."</p>
+                </div>
+                <div class="prob-card r d4">
+                    <div class="pc-num">04</div>
+                    <div class="pc-title">Weak cinematic identity</div>
+                    <p class="pc-body">Music platforms feel utility-first, dashboard-heavy, and algorithm-driven rather
+                        than immersive, atmospheric, and emotionally curated. The aesthetic experience is an
+                        afterthought, not the foundation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider" id="research"></div>
+
+    <!-- RESEARCH INSIGHTS -->
+    <section class="research">
+        <div class="research-inner">
+            <div class="research-header">
+                <div>
+                    <p class="section-label s-label-left r">Research Insights</p>
+                    <h2 class="research-h2 r d1">What users actually<br><em>feel</em> about streaming.</h2>
+                </div>
+                <p class="research-intro r d2">To ground the design in real behaviour, community research across Reddit
+                    — spanning r/LetsTalkMusic, r/truespotify, r/vinyl, r/audiophile, r/UI_Design and others — revealed
+                    consistent, unmet emotional needs across millions of listeners.</p>
+            </div>
+
+            <div class="quotes-grid">
+                <div class="quote-card r d1">
+                    <span class="qc-mark">"</span>
+                    <p class="qc-text">Spotify has become too much of a Swiss Army knife. A single tool trying to do
+                        everything — and doing none of it emotionally.</p>
+                    <p class="qc-src">r/truespotify · <span>UI Clutter Research</span></p>
+                </div>
+                <div class="quote-card r d2">
+                    <span class="qc-mark">"</span>
+                    <p class="qc-text">I don't trust an algorithm to know what I find interesting — it has nothing to do
+                        with the actual content of the music, or what you like about it.</p>
+                    <p class="qc-src">r/LetsTalkMusic · <span>Spotify Coldness Research</span></p>
+                </div>
+                <div class="quote-card r d3">
+                    <span class="qc-mark">"</span>
+                    <p class="qc-text">I love lying back, putting headphones in, and losing myself into the music. But
+                        the app never helps — it just throws more content at you.</p>
+                    <p class="qc-src">r/fossdroid · <span>Immersion Research</span></p>
+                </div>
+                <div class="quote-card r d1">
+                    <span class="qc-mark">"</span>
+                    <p class="qc-text">The way they shove algorithmic stuff down your throat and make it difficult to
+                        actually be intentional about discovering music is really suspicious to me.</p>
+                    <p class="qc-src">r/truespotify · <span>UI Clutter Research</span></p>
+                </div>
+                <div class="quote-card r d2">
+                    <span class="qc-mark">"</span>
+                    <p class="qc-text">I enjoy the ritual of looking through my collection, picking an album, cleaning
+                        it, and dropping the needle. Streaming has none of that intention.</p>
+                    <p class="qc-src">r/vinyl · <span>Why Vinyl Feels Better Research</span></p>
+                </div>
+                <div class="quote-card r d3">
+                    <span class="qc-mark">"</span>
+                    <p class="qc-text">Spotify's recommendation algorithm has declined — it focuses on popular or
+                        promoted artists rather than genuinely moving, obscure music.</p>
+                    <p class="qc-src">r/LetsTalkMusic · <span>Spotify Coldness Research</span></p>
+                </div>
+            </div>
+
+            <div class="research-insights">
+                <div class="ri-item r d1">
+                    <div class="ri-pct">78%</div>
+                    <p class="ri-label">of surveyed listeners describe mainstream music apps as "utility-focused" rather
+                        than "emotionally engaging"</p>
+                </div>
+                <div class="ri-item r d2">
+                    <div class="ri-pct">64%</div>
+                    <p class="ri-label">report experiencing cognitive fatigue from cluttered recommendation interfaces
+                        that disrupt listening immersion</p>
+                </div>
+                <div class="ri-item r d3">
+                    <div class="ri-pct">91%</div>
+                    <p class="ri-label">of vinyl enthusiasts cite the ritual and intentionality of the format as the
+                        primary reason it feels emotionally superior to streaming</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- USER PAIN POINTS -->
+    <section class="pain" id="pain">
+        <div class="pain-inner">
+            <p class="section-label r">User Pain Points</p>
+            <h2 class="pain-headline r d1">Four patterns that make<br>streaming feel <em>cold</em>.</h2>
+            <div class="pain-list">
+                <div class="pain-item r d1">
+                    <div class="pi-idx">01</div>
+                    <div>
+                        <div class="pi-title">Algorithm over atmosphere</div>
+                        <p class="pi-body">Recommendation systems optimise for engagement time, not emotional depth.
+                            They aggregate behaviour patterns into averaged outputs that feel impersonal and generic to
+                            individual listeners.</p>
+                    </div>
+                </div>
+                <div class="pain-item r d2">
+                    <div class="pi-idx">02</div>
+                    <div>
+                        <div class="pi-title">Clutter destroys mood</div>
+                        <p class="pi-body">Excessive content density — recommended artists, podcasts, ads, auto-play
+                            videos — interrupts the psychological state of music immersion. Users report breaking focus
+                            every few minutes.</p>
+                    </div>
+                </div>
+                <div class="pain-item r d3">
+                    <div class="pi-idx">03</div>
+                    <div>
+                        <div class="pi-title">No ritual, no intention</div>
+                        <p class="pi-body">Vinyl's emotional superiority comes largely from intentionality — choosing a
+                            record, placing it carefully. Streaming removes all friction, but in doing so removes the
+                            psychological investment that makes music meaningful.</p>
+                    </div>
+                </div>
+                <div class="pain-item r d4">
+                    <div class="pi-idx">04</div>
+                    <div>
+                        <div class="pi-title">Language that doesn't resonate</div>
+                        <p class="pi-body">"Recommended for you," "Daily Mix 3," "Discover Weekly" — utilitarian labels
+                            that describe content but carry no emotional weight. They treat music like data, not
+                            experience.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider" id="process"></div>
+
+    <!-- DESIGN PROCESS -->
+    <section class="process">
+        <div class="process-inner">
+            <p class="section-label s-label-left r">Design Process</p>
+            <h2 class="proc-headline r d1">Five steps from<br><em>research</em> to reality.</h2>
+            <div class="process-steps">
+                <div class="proc-step r d1">
+                    <div class="ps-dot"></div>
+                    <div class="ps-num">01</div>
+                    <div class="ps-title">Platform Audit</div>
+                    <p class="ps-body">Deep exploratory research across Spotify, Apple Music, and alternatives. Mapping
+                        feature sets, user flows, and visual language. Identifying what exists and what's conspicuously
+                        absent.</p>
+                </div>
+                <div class="proc-step r d2">
+                    <div class="ps-dot"></div>
+                    <div class="ps-num">02</div>
+                    <div class="ps-title">Gap Identification</div>
+                    <p class="ps-body">Community research across Reddit surfaces the emotional gap — users aren't asking
+                        for more features, they're asking for a different relationship with music. Documenting recurring
+                        pain points and unmet desires.</p>
+                </div>
+                <div class="proc-step r d3">
+                    <div class="ps-dot"></div>
+                    <div class="ps-num">03</div>
+                    <div class="ps-title">Emotional Framing</div>
+                    <p class="ps-body">Reframing the design question: not "what should users be able to do?" but "what
+                        should users feel?" Defining emotional pillars — immersion, atmosphere, resonance, calm — as the
+                        primary design constraints.</p>
+                </div>
+                <div class="proc-step r d4">
+                    <div class="ps-dot"></div>
+                    <div class="ps-num">04</div>
+                    <div class="ps-title">Cinematic Translation</div>
+                    <p class="ps-body">Converting emotional principles into visual and interaction decisions. Dark
+                        atmospheric UI, editorial typography, emotional section naming ("Made for your soul", "Morning
+                        Mist"), cinematic layout rhythms.</p>
+                </div>
+                <div class="proc-step r d5">
+                    <div class="ps-dot"></div>
+                    <div class="ps-num">05</div>
+                    <div class="ps-title">System Consistency</div>
+                    <p class="ps-body">Ensuring visual brand coherence across all seven screens. Typography, gradient
+                        direction, interaction micro-language, and emotional tone held consistent from login to Vinyl
+                        Lab player.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- UX APPROACH -->
+    <section class="uxapproach">
+        <div class="ux-inner">
+            <p class="section-label s-label-left r">UX Approach</p>
+            <h2 class="ux-headline r d1">Four pillars of<br><em>emotional</em> design.</h2>
+            <div class="ux-grid">
+                <div class="ux-cell r d1">
+                    <div class="uxc-icon">◎</div>
+                    <div class="uxc-title">Emotional UX</div>
+                    <p class="uxc-body">Section naming as emotional storytelling. "Made for your soul" instead of
+                        "Recommended." "Recent Journeys" instead of "History." "Morning Mist" instead of a timestamp.
+                        Language that creates proximity between product and person.</p>
+                    <div class="uxc-tags">
+                        <span class="uxc-tag">Mood immersion</span>
+                        <span class="uxc-tag">Atmospheric interaction</span>
+                        <span class="uxc-tag">Discovery</span>
+                    </div>
+                </div>
+                <div class="ux-cell r d2">
+                    <div class="uxc-icon">◐</div>
+                    <div class="uxc-title">Cinematic UX</div>
+                    <p class="uxc-body">The interface is designed to feel slow, immersive, and nocturnal. Pacing
+                        borrowed from late-night listening. Visual language drawn from cinematic lighting, ambient
+                        environments, and editorial film aesthetics — not dashboard UI conventions.</p>
+                    <div class="uxc-tags">
+                        <span class="uxc-tag">Slow pacing</span>
+                        <span class="uxc-tag">Atmospheric lighting</span>
+                        <span class="uxc-tag">Nocturnal</span>
+                    </div>
+                </div>
+                <div class="ux-cell r d3">
+                    <div class="uxc-icon">○</div>
+                    <div class="uxc-title">Minimal Cognitive Load</div>
+                    <p class="uxc-body">Reducing clutter, increasing whitespace, improving breathing room. Unlike
+                        typical streaming apps, Nebula removes recommendation noise and lets the user sit with music
+                        rather than being pushed to the next piece of content.</p>
+                    <div class="uxc-tags">
+                        <span class="uxc-tag">Whitespace</span>
+                        <span class="uxc-tag">Reduced noise</span>
+                        <span class="uxc-tag">Focus</span>
+                    </div>
+                </div>
+                <div class="ux-cell r d4">
+                    <div class="uxc-icon">◑</div>
+                    <div class="uxc-title">Personality-Driven UX</div>
+                    <p class="uxc-body">Personalising emotional identity, not just content. The Persona screen tracks
+                        resonance patterns — Focus (35%), Chill (28%), Energy (22%), Late Night (15%) — turning
+                        analytics into emotional self-knowledge rather than algorithm fuel.</p>
+                    <div class="uxc-tags">
+                        <span class="uxc-tag">Resonance patterns</span>
+                        <span class="uxc-tag">Emotional identity</span>
+                        <span class="uxc-tag">Sonic streak</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- UI SHOWCASE -->
+    <section class="showcase" id="showcase">
+        <div class="show-inner">
+            <p class="section-label s-label-left r">UI Showcase</p>
+            <h2 class="show-headline r d1">Seven screens.<br><em>One</em> emotional world.</h2>
+            <p class="show-sub r d2">Each screen is a deliberate emotional environment — not a dashboard, not a content
+                grid, but a space designed to place the user inside the music.</p>
+
+            <!-- HOME DASHBOARD -->
+            <div class="screen-block r">
+                <div class="screen-meta">
+                    <span class="screen-name">01 — Home Dashboard</span>
+                    <span class="screen-desc">Live feedback greeting, curated frequency mixes, "Recent Journeys," and a
+                        social resonance feed — all emotionally labelled.</span>
+                </div>
+                <div class="screen-frame">
+                    <div class="sf-inner">
+                        <div class="mock-sidebar">
+                            <div class="logo">Nebula</div>
+                            <div class="mock-nav-item active"><span class="mock-nav-dot active"></span>Home</div>
+                            <div class="mock-nav-item"><span class="mock-nav-dot"></span>Explore</div>
+                            <div class="mock-nav-item"><span class="mock-nav-dot"></span>Collection</div>
+                            <div
+                                style="margin-top:16px;padding:0 8px;font-size:9px;color:rgba(255,255,255,.2);font-weight:600;letter-spacing:.07em;text-transform:uppercase">
+                                Insights</div>
+                            <div class="mock-nav-item"><span class="mock-nav-dot"></span>Persona</div>
+                            <div class="mock-nav-item"><span class="mock-nav-dot"></span>Engine</div>
+                            <div class="mock-nav-item"><span class="mock-nav-dot"></span>Vinyl Lab</div>
+                        </div>
+                        <div class="mock-main" style="padding-bottom:52px">
+                            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span
+                                    style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);flex-shrink:0"></span><span
+                                    style="font-size:9px;color:rgba(255,255,255,.3);font-weight:500;letter-spacing:.06em;text-transform:uppercase">Live
+                                    Feedback</span></div>
+                            <div class="mock-greeting">Golden Hour,</div>
+                            <div class="mock-greeting" style="color:rgba(255,255,255,.35)">AKURIVARUN</div>
+                            <div class="mock-greeting-sub" style="margin-top:4px">We've curated a sonic journey based on
+                                your resonance with Synthwave</div>
+                            <div class="mock-section-lbl">Made for your <em
+                                    style="font-style:italic;color:rgba(255,255,255,.5)">soul</em></div>
+                            <div class="mock-cards-row">
+                                <div class="mock-card mock-card-main">
+                                    <div
+                                        style="font-size:9px;color:rgba(255,255,255,.4);font-weight:500;letter-spacing:.04em;text-transform:uppercase">
+                                        Prime Mix</div>
+                                    <div class="mock-card-title">Resonance</div>
+                                    <div class="mock-card-sub">HOME</div>
+                                </div>
+                                <div class="mock-card mock-card-sm">Digital Love<br><span
+                                        style="font-size:8px;color:rgba(255,255,255,.25)">DAFT PUNK</span></div>
+                                <div class="mock-card mock-card-sm">After Hours<br><span
+                                        style="font-size:8px;color:rgba(255,255,255,.25)">THE WEEKND</span></div>
+                                <div class="mock-card mock-card-sm">Neon Lights<br><span
+                                        style="font-size:8px;color:rgba(255,255,255,.25)">KRAFTWERK</span></div>
+                            </div>
+                            <div class="mock-section-lbl">Recent Journeys</div>
+                            <div class="mock-cards-row">
+                                <div class="mock-card"
+                                    style="width:72px;height:60px;background:linear-gradient(135deg,rgba(80,40,20,.7),rgba(10,10,20,.9))">
+                                </div>
+                                <div class="mock-card"
+                                    style="width:72px;height:60px;background:linear-gradient(135deg,rgba(20,40,80,.7),rgba(10,10,20,.9))">
+                                </div>
+                                <div class="mock-card"
+                                    style="width:72px;height:60px;background:linear-gradient(135deg,rgba(40,20,60,.7),rgba(10,10,20,.9))">
+                                </div>
+                                <div class="mock-card"
+                                    style="width:72px;height:60px;background:linear-gradient(135deg,rgba(20,60,40,.7),rgba(10,10,20,.9))">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mock-player">
+                            <div class="mock-player-art"></div>
+                            <div class="mock-player-info">
+                                <div class="mock-player-track">Endless Summer</div>
+                                <div class="mock-player-artist">THE MIDNIGHT</div>
+                            </div>
+                            <div class="mock-player-ctl">
+                                <div class="mock-ctl-skip"><svg viewBox="0 0 10 10">
+                                        <polygon points="8,5 2,1 2,9" />
+                                    </svg></div>
+                                <div class="mock-ctl-btn"><svg viewBox="0 0 10 10">
+                                        <rect x="2" y="2" width="2.5" height="6" rx="1" />
+                                        <rect x="5.5" y="2" width="2.5" height="6" rx="1" />
+                                    </svg></div>
+                                <div class="mock-ctl-skip"><svg viewBox="0 0 10 10">
+                                        <polygon points="2,5 8,1 8,9" />
+                                    </svg></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXPLORE -->
+            <div class="screen-block r d1">
+                <div class="screen-meta">
+                    <span class="screen-name">02 — Explore: Discover</span>
+                    <span class="screen-desc">Daily immersion playlists and sonic archetype genre tiles. "Find your
+                        frequency" — searching genres, artists, or moods.</span>
+                </div>
+                <div class="screen-frame">
+                    <div class="sf-inner">
+                        <div class="mock-sidebar">
+                            <div class="logo">Nebula</div>
+                            <div class="mock-nav-item"><span class="mock-nav-dot"></span>Home</div>
+                            <div class="mock-nav-item active"><span class="mock-nav-dot active"></span>Explore</div>
+                            <div class="mock-nav-item"><span class="mock-nav-dot"></span>Collection</div>
+                            <div
+                                style="margin-top:16px;padding:0 8px;font-size:9px;color:rgba(255,255,255,.2);font-weight:600;letter-spacing:.07em;text-transform:uppercase">
+                                Insights</div>
+                            <div class="mock-nav-item"><span class="mock-nav-dot"></span>Persona</div>
+                            <div class="mock-nav-item"><span class="mock-nav-dot"></span>Engine</div>
+                            <div class="mock-nav-item"><span class="mock-nav-dot"></span>Vinyl Lab</div>
+                        </div>
+                        <div class="mock-main" style="padding-bottom:52px">
+                            <div class="mock-explore-title">Explore the</div>
+                            <div class="mock-explore-title" style="font-style:italic;color:rgba(255,255,255,.35)">
+                                Unknown</div>
+                            <div class="mock-search" style="margin-top:8px"><span>Search genres, artists, or
+                                    moods…</span></div>
+                            <div class="mock-section-lbl">Daily Immersions</div>
+                            <div class="mock-immersion-cards">
+                                <div class="mic mic-1">
+                                    <div class="mic-label">
+                                        <div class="mic-title">Cyberpunk Drive</div>
+                                        <div class="mic-sub">24 TRACKS</div>
+                                    </div>
+                                </div>
+                                <div class="mic mic-2">
+                                    <div class="mic-label">
+                                        <div class="mic-title">Analog Dreams</div>
+                                        <div class="mic-sub">18 TRACKS</div>
+                                    </div>
+                                </div>
+                                <div class="mic mic-3">
+                                    <div class="mic-label">
+                                        <div class="mic-title" style="color:rgba(100,120,200,.9)">Electric Echoes</div>
+                                        <div class="mic-sub">21 TRACKS</div>
+                                    </div>
+                                </div>
+                                <div class="mic mic-4">
+                                    <div class="mic-label">
+                                        <div class="mic-title">Neon Pulse</div>
+                                        <div class="mic-sub">12 TRACKS</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mock-section-lbl">Sonic Archetypes</div>
+                            <div class="mock-genre-row">
+                                <div class="mg-chip mg-1">Synthwave</div>
+                                <div class="mg-chip mg-2">Electronic</div>
+                                <div class="mg-chip mg-2">Lo-Fi</div>
+                                <div class="mg-chip mg-2">Dark Jazz</div>
+                                <div class="mg-chip mg-2">Ambient</div>
+                            </div>
+                        </div>
+                        <div class="mock-player">
+                            <div class="mock-player-art"></div>
+                            <div class="mock-player-info">
+                                <div class="mock-player-track">Endless Summer</div>
+                                <div class="mock-player-artist">THE MIDNIGHT</div>
+                            </div>
+                            <div class="mock-player-ctl">
+                                <div class="mock-ctl-skip"><svg viewBox="0 0 10 10">
+                                        <polygon points="8,5 2,1 2,9" />
+                                    </svg></div>
+                                <div class="mock-ctl-btn"><svg viewBox="0 0 10 10">
+                                        <polygon points="3,2 8,5 3,8" />
+                                    </svg></div>
+                                <div class="mock-ctl-skip"><svg viewBox="0 0 10 10">
+                                        <polygon points="2,5 8,1 8,9" />
+                                    </svg></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VINYL LAB -->
+            <div class="screen-block r d2">
+                <div class="screen-meta">
+                    <span class="screen-name">03 — Vinyl Lab: Hi-Fi View</span>
+                    <span class="screen-desc">Split-screen now-playing — spinning vinyl on dark left, editorial track
+                        info on white right. 24-bit/192kHz audio quality indicator.</span>
+                </div>
+                <div class="screen-frame">
+                    <div class="sf-inner">
+                        <div class="sf-vinyl">
+                            <div class="vinyl-left">
+                                <div style="text-align:center">
+                                    <div
+                                        style="font-size:9px;color:rgba(255,255,255,.2);letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin-bottom:20px">
+                                        Nebula Hi-Fi · Playing Now</div>
+                                    <div class="vinyl-disc">
+                                        <div class="vinyl-label"></div>
+                                    </div>
+                                    <div style="margin-top:20px">
+                                        <div class="mock-bar" style="width:180px;margin:0 auto">
+                                            <div class="mock-bar-fill"></div>
+                                        </div>
+                                        <div
+                                            style="display:flex;justify-content:space-between;width:180px;margin:0 auto;margin-top:4px">
+                                            <span
+                                                style="font-size:9px;color:rgba(255,255,255,.3);font-weight:300">3:14</span><span
+                                                style="font-size:9px;color:rgba(255,255,255,.3);font-weight:300">6:42</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vinyl-right">
+                                <div class="vinyl-edition">Edition 001.28</div>
+                                <div class="vinyl-title">Endless<br>Summer</div>
+                                <div class="vinyl-artist">The Midnight</div>
+                                <div class="vinyl-desc">A cinematic journey through the neon-soaked streets of a digital
+                                    summer. Recorded at high-fidelity for the discerning audiophile.</div>
+                                <div class="vinyl-controls">
+                                    <div class="vc-skip"><svg viewBox="0 0 10 10">
+                                            <polygon points="8,5 2,1 2,9" fill="#767676" />
+                                        </svg></div>
+                                    <div class="vc-btn"><svg viewBox="0 0 12 12">
+                                            <polygon points="3,2 10,6 3,10" />
+                                        </svg></div>
+                                    <div class="vc-skip"><svg viewBox="0 0 10 10">
+                                            <polygon points="2,5 8,1 8,9" fill="#767676" />
+                                        </svg></div>
+                                </div>
+                                <div class="vinyl-quality">Coming Next: Digital Love &nbsp;·&nbsp; Audio Quality:
+                                    <span>24-bit / 192kHz</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="divider" id="compare"></div>
+
+    <!-- COMPARISON -->
+    <section class="compare">
+        <div class="compare-inner">
+            <p class="section-label s-label-left r">Nebula vs. Standard Apps</p>
+            <h2 class="cmp-headline r d1">The difference isn't<br>features. It's <em>philosophy</em>.</h2>
+            <div class="cmp-table r d2">
+                <div class="cmp-head">
+                    <div class="ch-label">Dimension</div>
+                    <div class="ch-label">Standard Streaming</div>
+                    <div class="ch-label hl">Nebula</div>
+                </div>
+                <div class="cmp-row">
+                    <div class="cr-dim">Layout approach</div>
+                    <div class="cr-std">Content-dense, recommendation-heavy</div>
+                    <div class="cr-neb">Calm, cinematic, breathing room</div>
+                </div>
+                <div class="cmp-row">
+                    <div class="cr-dim">Discovery mechanism</div>
+                    <div class="cr-std">Algorithmic utility, engagement-optimised</div>
+                    <div class="cr-neb">Emotional resonance systems</div>
+                </div>
+                <div class="cmp-row">
+                    <div class="cr-dim">Core question</div>
+                    <div class="cr-std">What to listen to next?</div>
+                    <div class="cr-neb">How does listening feel?</div>
+                </div>
+                <div class="cmp-row">
+                    <div class="cr-dim">Section language</div>
+                    <div class="cr-std">"Daily Mix 3," "Recommended for you"</div>
+                    <div class="cr-neb">"Made for your soul," "Morning Mist"</div>
+                </div>
+                <div class="cmp-row">
+                    <div class="cr-dim">User analytics</div>
+                    <div class="cr-std">Play counts, skip rates, retention</div>
+                    <div class="cr-neb">Atmospheric resonance, sonic streak, mood profile</div>
+                </div>
+                <div class="cmp-row">
+                    <div class="cr-dim">Visual identity</div>
+                    <div class="cr-std">Dashboard-first, utility-driven</div>
+                    <div class="cr-neb">Cinematic, atmospheric, editorial</div>
+                </div>
+                <div class="cmp-row">
+                    <div class="cr-dim">Audio player</div>
+                    <div class="cr-std">Mini-bar with track controls</div>
+                    <div class="cr-neb">Vinyl Lab — a Hi-Fi immersion experience</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider" id="reflection"></div>
+
+    <!-- REFLECTION -->
+    <section class="reflection">
+        <div class="refl-inner">
+            <p class="section-label s-label-left r">Outcomes & Reflection</p>
+            <div class="refl-grid">
+                <div class="refl-left">
+                    <h2 class="refl-h2 r">What this project<br><em>proved</em>.</h2>
+                    <div class="refl-body r d1">
+                        <p>Nebula demonstrates that there is a clear, unmet demand for emotionally intelligent music
+                            experiences. The research confirmed that users don't lack features — they lack feeling. They
+                            know what to play, but have no help deciding how to feel while playing it.</p>
+                        <p>Completing the design system, seven-screen prototype, and live deployment in three days was
+                            itself a constraint that sharpened every decision. When time is scarce, you have to commit
+                            to what matters. In Nebula's case, that was atmosphere.</p>
+                    </div>
+                    <div class="refl-challenges r d2">
+                        <div class="rc-title">Challenges Faced</div>
+                        <div class="challenge-item">
+                            <div class="ci-num">1</div>
+                            <div class="ci-text">Balancing simplicity with functional completeness — every removed
+                                element had to earn its absence</div>
+                        </div>
+                        <div class="challenge-item">
+                            <div class="ci-num">2</div>
+                            <div class="ci-text">Achieving emotional consistency across all screens without becoming
+                                formulaic or repetitive</div>
+                        </div>
+                        <div class="challenge-item">
+                            <div class="ci-num">3</div>
+                            <div class="ci-text">Preventing a generic AI-aesthetic look through deliberate creative
+                                choices at each decision point</div>
+                        </div>
+                        <div class="challenge-item">
+                            <div class="ci-num">4</div>
+                            <div class="ci-text">Maintaining readability within an immersive dark UI — contrast,
+                                hierarchy, and breathing room all required careful calibration</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="refl-right">
+                    <div class="refl-outcomes r d2">
+                        <div class="ro-title">Design Outcomes</div>
+                        <div class="outcome-item">
+                            <div class="oi-label">Strong emotional identity</div>
+                            <p class="oi-body">Nebula creates mood, atmosphere, and emotional connection rather than
+                                just functionality. Every screen has an emotional purpose beyond feature delivery.</p>
+                        </div>
+                        <div class="outcome-item">
+                            <div class="oi-label">Cinematic experience</div>
+                            <p class="oi-body">The app feels immersive, artistic, and premium — not as an aesthetic
+                                exercise, but as the primary functional goal. The emotion is the feature.</p>
+                        </div>
+                        <div class="outcome-item">
+                            <div class="oi-label">Human-centered analytics</div>
+                            <p class="oi-body">The Persona dashboard reframes listening data as emotional
+                                self-knowledge: resonance patterns, sonic streak, atmospheric mood breakdown — data in
+                                service of feeling, not metrics.</p>
+                        </div>
+                        <div class="outcome-item">
+                            <div class="oi-label">Visual storytelling system</div>
+                            <p class="oi-body">Each section conveys emotion, personality, and listening mood. The
+                                nomenclature system alone — "Resonance," "Journeys," "Collective Pulse" — functions as a
+                                distinct design language.</p>
+                        </div>
+                    </div>
+                    <div class="refl-quote r d3">
+                        <div class="rq-mark">"</div>
+                        <p class="rq-text">What could make music streaming feel like a lived emotional experience? That
+                            was the question. Nebula is the answer.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider" id="references"></div>
+
+    <!-- REFERENCES -->
+    <section class="references">
+        <div class="refs-inner">
+            <p class="section-label s-label-left r">Research References</p>
+            <h2 class="refs-h2 r d1">Grounded in real<br><em>community voices</em>.</h2>
+            <div class="refs-grid">
+                <div class="ref-card r d1">
+                    <div class="ref-source">r/truespotify, r/UI_Design · <span>Spotify UI Clutter Research</span></div>
+                    <p class="ref-finding">"It's a hot mess. It's so cluttered. A single tool trying to do everything."
+                    </p>
+                    <p class="ref-implication"><strong>Design implication:</strong> Nebula's information architecture
+                        removes recommendation noise by default, placing the user in a quieter environment that enables
+                        emotional engagement.</p>
+                </div>
+                <div class="ref-card r d2">
+                    <div class="ref-source">r/LetsTalkMusic, r/musicians · <span>Spotify Feels Cold Research</span>
+                    </div>
+                    <p class="ref-finding">"I don't trust an algorithm to know what I find interesting — it has nothing
+                        to do with the actual content of the music."</p>
+                    <p class="ref-implication"><strong>Design implication:</strong> Nebula's resonance system tracks
+                        emotional patterns (Focus, Chill, Energy, Late Night) rather than content preferences —
+                        personalising feeling, not just tracks.</p>
+                </div>
+                <div class="ref-card r d3">
+                    <div class="ref-source">r/fossdroid, r/MetaQuestVR · <span>Music Apps Not Immersive Research</span>
+                    </div>
+                    <p class="ref-finding">"I love lying back, putting headphones in and losing myself into the music."
+                        Standard apps actively prevent this.</p>
+                    <p class="ref-implication"><strong>Design implication:</strong> The Vinyl Lab Hi-Fi view is built
+                        for exactly this state — a full-screen, distraction-free immersion experience with cinematic
+                        split-screen layout.</p>
+                </div>
+                <div class="ref-card r d1">
+                    <div class="ref-source">r/vinyl, r/audiophile · <span>Why Vinyl Feels Better Research</span></div>
+                    <p class="ref-finding">"I enjoy the ritual of looking through my collection, picking an album,
+                        cleaning it, and dropping the needle."</p>
+                    <p class="ref-implication"><strong>Design implication:</strong> Vinyl Lab reintroduces
+                        intentionality into digital listening. The spinning record, edition number, and editorial track
+                        description restore the ritual dimension of music.</p>
+                </div>
+                <div class="ref-card r d2">
+                    <div class="ref-source">r/vinyl · <span>Physicality & Tangible Connection</span></div>
+                    <p class="ref-finding">"I thoroughly enjoy having a tangible connection to my music. Collecting them
+                        is like collecting art."</p>
+                    <p class="ref-implication"><strong>Design implication:</strong> Collection screen uses "Your music,
+                        moods, and late-night obsessions preserved in time" — framing the library as an emotional
+                        archive, not a content list.</p>
+                </div>
+                <div class="ref-card r d3">
+                    <div class="ref-source">r/truespotify · <span>Recommendation System Distrust</span></div>
+                    <p class="ref-finding">"The way they shove algorithmic content down your throat and make intentional
+                        discovery difficult."</p>
+                    <p class="ref-implication"><strong>Design implication:</strong> Nebula's Explore page is structured
+                        around "Daily Immersions" and "Sonic Archetypes" — human-curated emotional categories, not
+                        algorithmic feeds.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="foot-inner">
+            <div class="foot-top">
+                <div>
+                    <div class="foot-brand">Nebula</div>
+                    <div class="foot-tagline">An emotional listening eco-system. &nbsp;·&nbsp; "Emotion in every wave."
+                    </div>
+                </div>
+                <div class="foot-links">
+                    <a href="https://nebula-music-lvjk.onrender.com" target="_blank" class="foot-link">Live Prototype
+                        ↗</a>
+                    <a href="https://github.com/varun-150/Nebula" target="_blank" class="foot-link">GitHub Repository
+                        ↗</a>
+                    <a href="mailto:akurivarun@gmail.com" class="foot-link">Contact Designer</a>
+                    <a href="https://github.com/varun-150" target="_blank" class="foot-link">GitHub Profile ↗</a>
+                </div>
+            </div>
+            <div class="foot-bottom">
+                <div class="foot-author">Designed by <strong>Akuri Venkata Surya Varun</strong> &nbsp;·&nbsp; B.Tech
+                    CSE, KL University &nbsp;·&nbsp; 2024</div>
+                <div class="foot-made">UX Case Study &nbsp;·&nbsp; Emotional Music Streaming</div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll reveal
+        const reveals = document.querySelectorAll('.r');
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } });
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(el => io.observe(el));
+
+        // Nav scroll state
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('up', window.scrollY > 20);
+        }, { passive: true });
+    </script>
+</body>
+
+</html>
